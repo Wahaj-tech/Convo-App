@@ -5,9 +5,11 @@
 
 import express from 'express';
 import dotenv from 'dotenv'//without this we'll get undefined for env varables
+import path from 'path'
 
 dotenv.config()//to perform process.env.Variable_name 
 const app=express()
+const __dirname=path.resolve();
 
 import authRoutes from './routes/auth.route.js'
 import messageRoute from './routes/message.route.js'
@@ -15,8 +17,16 @@ import messageRoute from './routes/message.route.js'
 app.use('/api/auth',authRoutes)
 app.use('/api/message',messageRoute)
 
+//make ready for deployment-->
+if(process.env.NODE_ENV=="production"){
+    app.use(express.static(path.join(__dirname,"../frontend/dist")))
 
+    app.get('{*slug}',(_,res)=>{
+        res.sendFile(path.join(__dirname,"../frontend","dist","index.html"))//we can also write is as ../frontend/dist/index.html
+    })
+}
+const PORT = process.env.PORT || 3000;
 app.listen(process.env.PORT,()=>{
     console.log(`server is running on port ${process.env.PORT}`);
     
-})  
+})   
