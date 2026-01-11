@@ -12,7 +12,7 @@ import path from 'path'
 
 import authRoutes from './routes/auth.route.js'
 import messageRoute from './routes/message.route.js'
-import { connectDB } from '../lib/db.js';
+import { connectDB } from '../src/lib/db.js';
 
 dotenv.config()//to perform process.env.Variable_name 
 const app=express()
