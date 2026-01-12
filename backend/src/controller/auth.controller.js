@@ -30,11 +30,12 @@ export const signup=async(req,res)=>{
             password:hashedPassword,
         })
         if(newUser){
-            generateToken(newUser._id,res)//giving res so that we can store signup token in browser in terms of cookie
-            await newUser.save();
+            
+            const savedUser= await newUser.save();
+            generateToken(savedUser._id,res)//giving res so that we can store signup token in browser in terms of cookie
 
             res.status(201).json({
-                _id:newUser._id,
+                _id:newUser._id,  
                 fullName:newUser.fullName,
                 email:newUser.email,
                 password:newUser.password
