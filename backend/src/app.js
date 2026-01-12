@@ -1,5 +1,7 @@
 //npm init -y
 //npm i express mongoose jsonwebtoken socket.io bcrypt dotenv cookie-parser
+//npm i resend
+//for welcome email for users-->Resend website is used (go to documentation for nodejs)
 
 // const express=require('express'); for performing import from type syntax put "type":"module" & under script "dev":"nodemon src/app.js" as app is under src folder similarly under script "start":"node src/app.js" as when we deploy it we don't want any changes
 
@@ -35,4 +37,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(process.env.PORT,()=>{
     console.log(`server is running on port ${process.env.PORT}`);
     connectDB()
-})   
+})  
+  
