@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import { ENV } from '../lib/env.js';
 
 export const generateToken=(userId,res)=>{//taking res so that we can send it to browser in terms of cookies
     
@@ -12,7 +13,7 @@ export const generateToken=(userId,res)=>{//taking res so that we can send it to
     res.cookie("jwt",token,{
         maxAge:7*24*60*60*1000,//7 days in miliSeconds
         httpOnly:true,//prevent XSS attacks:cross-site scripting
-        secure:(process.env.NODE_ENV=="development")?false:true,
+        secure:(ENV.NODE_ENV=="development")?false:true,
         sameSite:"strict"//CSRF attacks
     })
     return token;
