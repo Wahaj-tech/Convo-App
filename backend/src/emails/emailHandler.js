@@ -15,3 +15,10 @@ export const sendWelcomeEmail=async(email,name,clientURL)=>{
     console.log("Welcome email sent successfully",data);
 
 }//no need to learn this code ...go to resend website docs ->node js u will get the code
+
+
+//Know some terms --->
+/*1.TRANSACTIONAL STREAM: for triggering emails to one recipient at a time jaise login ya signup krne p welcome email jaata h ,password reset email ,confirmation email...etc
+
+2.BULK STREAM: for promotional emails to multiple recipients at once
+great for:product announcement ,newsletters ,terms and comnditions*/
