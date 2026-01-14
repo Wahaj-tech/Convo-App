@@ -10,6 +10,7 @@
 import express from 'express';
 import dotenv from 'dotenv'//without this we'll get undefined for env varables
 import path from 'path'
+import cookieParser from 'cookie-parser'
 
 
 import authRoutes from './routes/auth.route.js'
@@ -21,6 +22,8 @@ const app=express()
 const __dirname=path.resolve();
 //#IMPORTANT#
 app.use(express.json())//so that we'll get access to the feilds that user send from frontend.{req.body}
+app.use(cookieParser())
+
 
 app.use('/api/auth',authRoutes)
 app.use('/api/message',messageRoute)
