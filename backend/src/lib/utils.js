@@ -19,3 +19,4 @@ export const generateToken=(userId,res)=>{//taking res so that we can send it to
 }
 //secure:(process.env.NODE_ENV=="development")?false:true,   (why?)
 /*it states that if we are if development then make it false because in development we are at http( http://localhost) but in case of production make secure:true because at production we are at https(https://djdkvdk.com)*/
+
