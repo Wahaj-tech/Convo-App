@@ -6,6 +6,7 @@ import { sendWelcomeEmail } from '../emails/emailHandler.js';
 import dotenv from "dotenv"
 dotenv.config()
 
+
 // import dotenv from "dotenv"
 // dotenv.config()  instead of this using in every file we can just import ENV from env.js in lib folder
 import {ENV} from '../lib/env.js'
@@ -51,7 +52,7 @@ export const signup=async(req,res)=>{
                 password:newUser.password
             })
             try{
-                sendWelcomeEmail(savedUser.email,savedUser.fullName,process.env.CLIENT_URL)
+                sendWelcomeEmail(savedUser.email,savedUser.fullName,ENV.CLIENT_URL)
             }catch(err){
                 console.error("Failed to sent welcome email!:",error)
             }
@@ -68,8 +69,9 @@ export const signup=async(req,res)=>{
 }
 
 
-export const login=async(req,res)=>{
 
+
+export const login=async(req,res)=>{
     try{
         const{email,password}=req.body;
         if(!email||!password){
@@ -108,10 +110,12 @@ export const login=async(req,res)=>{
     
 }
 
+
 export const logout=(_, res)=>{//logout not need to be async function and req is not required
     res.cookie("jwt","",{maxAge:0});
     res.status(200).json({message:"Logged Out Successfully"});
 }
+
 
 
 export const updateProfile=async(req,res)=>{//this route will basiccally allow the user to update their profile Image and we would store the images in Cloudinary
@@ -130,3 +134,4 @@ export const updateProfile=async(req,res)=>{//this route will basiccally allow t
         res.status(500).json({message:"internal server error"})
     }
 }
+
