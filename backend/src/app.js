@@ -20,8 +20,8 @@ import { connectDB } from '../src/lib/db.js';
 dotenv.config()//to perform process.env.Variable_name 
 const app=express()
 const __dirname=path.resolve();
-//#IMPORTANT#
-app.use(express.json())//so that we'll get access to the feilds that user send from frontend.{req.body}
+//#IMPORTANT#  payload to large error
+app.use(express.json())//so that we'll get access to the feilds that user send from frontend.{req.body}.....it express.json() will not allow to send more than 500KB so that we will increase the limit
 app.use(cookieParser())
 
 
@@ -42,3 +42,4 @@ app.listen(process.env.PORT,()=>{
     connectDB()
 })  
   
+
