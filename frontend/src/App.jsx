@@ -1,8 +1,10 @@
-import React from 'react'
-import { Route, Routes } from 'react-router'
+import React, { useEffect } from 'react'
+import { Navigate, Route, Routes } from 'react-router'
 import ChatPage from './pages/ChatPage'
 import LoginPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
+import { useAuthStore } from './store/useAuthStore'
+import PageLoader from './components/PageLoader'
 
 //install package for tailwind and daisyUI(it is used to reduce long styling performed in tailwind-->goto daisuUI and install package and all)
 
@@ -11,6 +13,16 @@ import SignUpPage from './pages/SignUpPage'
 //npm i zustand (goto store folder ... then,useAuthStore.js)
 
 const App = () => {
+
+  const {checkAuth,isCheckingAuth,authUser}=useAuthStore();
+  useEffect(()=>{
+    checkAuth();
+  },[checkAuth])
+  console.log(authUser);
+  
+  if(isCheckingAuth)
+    return <PageLoader/>
+  
   return (
     <div className='min-h-screen bg-slate-900  relative flex items-center justify-center p-4 overflow-hidden'>
       {/* DECORATORS - GRID BG & GLOW SHAPES (these will be in all routes)*/}
@@ -18,10 +30,10 @@ const App = () => {
       <div className="absolute top-0 -left-4 size-96 bg-pink-500 opacity-20 blur-[100px]" />
       <div className="absolute bottom-0 -right-4 size-96 bg-cyan-500 opacity-20 blur-[100px]" />
       <Routes>
-        <Route path='/' element={<ChatPage/>} />
-        <Route path='/login' element={<LoginPage/>}/>
-        <Route path='/signup' element={<SignUpPage/>}/>
-    </Routes>
+        <Route path='/' element={authUser?<ChatPage/>:< Navigate to={"/login"}/>} />
+        <Route path='/login' element={!authUser?<LoginPage/>:<Navigate to={"/"} />}/>
+        <Route path='/signup' element={!authUser?<SignUpPage/>:<Navigate to={"/"} />}/>
+      </Routes>
     </div>
   )
 }
