@@ -3,6 +3,7 @@
 
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
+import toast from "react-hot-toast";
 
 //goto zustand webpage for overview of code ..how to write
 // export const useAuthStore=create((set)=>({
@@ -26,15 +27,40 @@ import { axiosInstance } from "../lib/axios";
 export const useAuthStore=create((set)=>({
     authUser:null,
     isCheckingAuth:true,
+    isSigningUp:false,
     checkAuth:async()=>{
         try{
             const res=await axiosInstance.get('/auth/check');//this is equal to http://localhost:3000/api/auth/check
-            set({authUser:res.data});
+            if (res.data && res.data._id) { // or whatever field identifies a valid user
+                set({ authUser: res.data });
+            } else {
+                set({ authUser: null });
+            }
         }catch(error){
             console.error("error in authCheck:",error);
             set({authUser:null})
         }finally{
             set({isCheckingAuth:false})//either we succeed in try block or fail in catch -->make isCheckingAuth :false
         }
+    },
+    signup:async(data)=>{
+        set({isSigningUp:true})
+        try{
+            const res=await axiosInstance.post('/auth/signup',data)
+            set({authUser:res.data})
+            //instead of flash we are using react hot toast for showing success and error messages
+            //npm i react-hot-toast
+            toast.success("SIgnUp successful")
+        }catch(error){
+            console.error("error in signup:",error);
+            toast.error(error.response?.data.message||"Signup failed");
+        }   
+        finally{
+            set({isSigningUp:false})
+        }
     }
 }))
+
+
+
+ 
