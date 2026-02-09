@@ -37,12 +37,12 @@ app.use('/api/message',messageRoute)
 if(process.env.NODE_ENV=="production"){
     app.use(express.static(path.join(__dirname,"../frontend/dist")))
 
-    app.get('{*slug}',(_,res)=>{
+    app.get(/.*/,(_,res)=>{
         res.sendFile(path.join(__dirname,"../frontend","dist","index.html"))//we can also write is as ../frontend/dist/index.html
     })
 }
 const PORT = process.env.PORT || 3000;
-app.listen(process.env.PORT,()=>{
+app.listen(PORT,()=>{
     console.log(`server is running on port ${process.env.PORT}`);
     connectDB()
 })  
