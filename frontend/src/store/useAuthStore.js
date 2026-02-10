@@ -28,6 +28,8 @@ export const useAuthStore=create((set)=>({
     authUser:null,
     isCheckingAuth:true,
     isSigningUp:false,
+    isLoggingIn:false,
+    isLoggedOut:false,
     checkAuth:async()=>{
         try{
             const res=await axiosInstance.get('/auth/check');//this is equal to http://localhost:3000/api/auth/check
@@ -57,6 +59,32 @@ export const useAuthStore=create((set)=>({
         }   
         finally{
             set({isSigningUp:false})
+        }
+    },
+    login:async(data)=>{
+        set({isLoggingIn:true})
+        try{
+            const res=await axiosInstance.post('/auth/login',data);
+            set({authUser:res.data})
+            toast.success("Login successful")
+        }catch(error){
+            console.error("error in login:",error);
+            toast.error(error.response?.data.message||"Login failed");
+        }finally{
+            set({isLoggingIn:false})
+        }
+    },
+    logout:async()=>{
+        set({isLoggedOut:true})
+        try{
+            const res=await axiosInstance.post('/auth/logout');//backend seh {"message":"Logged Out Successfully"} yeh aa rha h(can go and check in network in browser devtools and clicking on Fetch/XHR)
+            set({authUser:null})
+            toast.success(res.data.message)
+        }
+        catch(error){
+            toast.error(error.response?.data.message||"Logout failed");
+        }finally{
+            set({isLoggedOut:false})
         }
     }
 }))

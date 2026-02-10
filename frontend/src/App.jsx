@@ -5,7 +5,8 @@ import LoginPage from './pages/LoginPage'
 import SignUpPage from './pages/SignUpPage'
 import { useAuthStore } from './store/useAuthStore'
 import PageLoader from './components/PageLoader'
-import Toaster from 'react-hot-toast'
+import { Toaster } from "react-hot-toast";
+
 
 //install package for tailwind and daisyUI(it is used to reduce long styling performed in tailwind-->goto daisuUI and install package and all)
 
@@ -15,22 +16,19 @@ import Toaster from 'react-hot-toast'
 
 const App = () => {
 
-  console.log('🔄 App rendered');
-
   const { checkAuth, isCheckingAuth, authUser } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
-  console.log(authUser);
-  console.log('👤 authUser:', authUser);
-  console.log('⏳ isCheckingAuth:', isCheckingAuth);
-  console.log('✔️ Is user logged in?:', !!authUser);
-
   // Show loader while checking authentication
   if (isCheckingAuth) {
-    return <PageLoader />;
+    return (
+    <>
+      <PageLoader />
+    </>
+  );
   }
 
   // Main app UI
