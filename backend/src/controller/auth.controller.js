@@ -18,10 +18,10 @@ export const signup=async(req,res)=>{
     try{
         let {fullName,email,password}=req.body;//we cannot have this without app.use(express.json()) in app.js file
         if(!fullName || !email || !password ){
-            res.status(400).send("All feilds are required");
+            return res.status(400).json({message:"All feilds are required"});
         }
         if(password.length<6){
-            res.status(400).send("Password must be at least 6 characters")
+            return res.status(400).json({message:"Password must be at least 6 characters"})
         }
         //checking if email is valid or not through:regex(regular expression)
         const emailRegex=/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
@@ -42,20 +42,18 @@ export const signup=async(req,res)=>{
         })
         if(newUser){
             
-            const savedUser= await newUser.save();
-            generateToken(savedUser._id,res)//giving res so that we can store signup token in browser in terms of cookie
-
-            res.status(201).json({
+            generateToken(newUser._id,res)//giving res so that we can store signup token in browser in terms of cookie
+            try{
+                sendWelcomeEmail(newUser.email,newUser.fullName,ENV.CLIENT_URL)
+            }catch(err){
+                console.error("Failed to sent welcome email!:",err)
+            }
+            return res.status(201).json({
                 _id:newUser._id,  
                 fullName:newUser.fullName,
                 email:newUser.email,
-                password:newUser.password
+                
             })
-            try{
-                sendWelcomeEmail(savedUser.email,savedUser.fullName,ENV.CLIENT_URL)
-            }catch(err){
-                console.error("Failed to sent welcome email!:",error)
-            }
         }
         else{
             res.status(400).json({message:"Invalid user data"});
@@ -75,10 +73,10 @@ export const login=async(req,res)=>{
     try{
         const{email,password}=req.body;
         if(!email||!password){
-            res.status(400).json({message:"all feilds are required "})
+            return res.status(400).json({message:"all feilds are required "})
         }
         if(password.length<6){
-                res.status(400).send("Password must be at least 6 characters")
+                return res.status(400).json({message:"Password must be at least 6 characters"})
         }
         const user=await userModel.findOne({email:email});
         if(!user){
@@ -90,19 +88,18 @@ export const login=async(req,res)=>{
         }
         generateToken(user._id,res);
     
-        res.status(201).json({
-            _id:user._id,  
-            fullName:user.fullName,
-            email:user.email,
-            password:user.password
-        })
         try{
             sendWelcomeEmail(user.email,user.fullName,ENV.CLIENT_URL)
         }catch(err){
-            console.error("Error Sending Welcome Email:",error);
+            console.error("Error Sending Welcome Email:",err);
         }
+        return res.status(200).json({
+            _id:user._id,  
+            fullName:user.fullName,
+            email:user.email,
+        })
     }catch(err){
-        console.error("error in login controller:",error);
+        console.error("error in login controller:",err);
         res.status(500).json({message:"Internal Server Error"})
         
     }
@@ -130,7 +127,7 @@ export const updateProfile=async(req,res)=>{//this route will basiccally allow t
         const updatedUser=await userModel.findByIdAndUpdate(userId,{profilePic:uploadResponse.secure_url},{new:true});
         res.status(200).json({updatedUser});
     }catch(err){
-        console.error("Error in update profile:",error);
+        console.error("Error in update profile:",err);
         res.status(500).json({message:"internal server error"})
     }
 }
