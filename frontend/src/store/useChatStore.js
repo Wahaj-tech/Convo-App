@@ -1,10 +1,11 @@
 import {create} from 'zustand';
-import {axiosInstance} from '../utils/axiosInstance';
+import { axiosInstance } from '../lib/axios';
 import {toast} from 'react-hot-toast';
 export const useChatStore= create((set,get)=>({
     allContacts:[],
     chats:[],
     messages:[],
+    activeTab: "chats",
     selectedUser:null,
     isUsersLoading:false,
     isMessagesLoading:false,
