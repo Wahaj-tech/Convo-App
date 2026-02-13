@@ -1,9 +1,9 @@
 import BorderAnimatedContainer from "../components/BorderAnimatedContainer";
 import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
-import PersonHeader from "../components/PersonHeader";
+import ProfileHeader from "../components/ProfileHeader";
 import ActiveTabSwitch from "../components/ActiveTabSwitch";
-import { ChatsList } from "../components/ChatsList";
+import  ChatsList  from "../components/ChatsList";
 import ContactList from "../components/contactList";
 import ChatContainer from "../components/ChatContainer";
 import NoConversationPlaceholder from "../components/NoConversationPlaceholder";
@@ -14,7 +14,7 @@ function ChatPage() {
       <BorderAnimatedContainer>
         {/*LEFT SIDE */}
         <div className="w-80 bg-slate-700/50 backdrop-blur-sm flex flex-col">
-        <PersonHeader />
+        <ProfileHeader />
         <ActiveTabSwitch/>
         <div className=" flex-1 overflow-y-auto p-4 space-y-2">
           {activeTab==="chats" ? <ChatsList/>:<ContactList/>}
