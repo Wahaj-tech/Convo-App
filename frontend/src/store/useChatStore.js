@@ -23,8 +23,8 @@ export const useChatStore= create((set,get)=>({
     getAllContacts:async()=>{
         set({isUsersLoading:true})
         try{
-            const res=axiosInstance.get("/messages/contacts")
-            set({allContacts:res.data})
+            const res=await axiosInstance.get("/messages/contacts")
+            set({allContacts:res.data.filterUsers})
         }
         catch(error){
             toast.error(error.response?.data.message || "Failed to load contacts")
@@ -36,7 +36,7 @@ export const useChatStore= create((set,get)=>({
     getMyChatPartners:async()=>{
         set({isUsersLoading:true})
         try{
-            const res=axiosInstance.get("/messages/chats")
+            const res=await axiosInstance.get("/messages/chats")
             set({chats:res.data})
         }
         catch(error){
