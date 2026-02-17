@@ -37,6 +37,8 @@ export const getMessagesByUserId=async(req,res)=>{
 
 export const sendMessage=async(req,res)=>{
     try{
+        console.log("AUTH USER ID:", req.user._id);
+
         const {text,image}=req.body;//what type of message is being sended
         const {id:receiverId}=req.params;
         const senderId=req.user._id;
@@ -45,7 +47,7 @@ export const sendMessage=async(req,res)=>{
             return res.status(400).json({message:"Text or Image is Required"})
         if(senderId.equals(receiverId))
             return res.status(400).json({message: "cannot send messages to yuorself"})
-        const receiverExist=await userModel.exist({_id:receiverId})
+        const receiverExist=await userModel.exists({_id:receiverId})
         if(!receiverExist)
             return res.status(404).json({message:"Receiver doesn't exist"})
         
