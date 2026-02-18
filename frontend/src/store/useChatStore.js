@@ -58,5 +58,16 @@ export const useChatStore= create((set,get)=>({
         finally{
             set({isMessagesLoading:false})
         }
+    },
+    sendMessage:async(data)=>{
+        const {selectedUser,messages}=get();//getting the selected user and messages
+        set({isMessagesLoading:true})
+        try{
+            const res=await axiosInstance.post(`/messages/send/${selectedUser._id}`,data);
+            set({messages:messages.concat(res.data)})//we don't want to overwrite the message so latest messages will be added 
+        }
+        catch(error){
+            toast.error(error.response?.data.message|| "failed to load image")
+        }
     }
-}))
+})) 
