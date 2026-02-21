@@ -4,7 +4,7 @@ import { useChatStore } from "../store/useChatStore";
 import ProfileHeader from "../components/ProfileHeader";
 import ActiveTabSwitch from "../components/ActiveTabSwitch";
 import  ChatsList  from "../components/ChatsList";
-import ContactList from "../components/contactList";
+import ContactList from "../components/ContactList";
 import ChatContainer from "../components/ChatContainer";
 import NoConversationPlaceholder from "../components/NoConversationPlaceholder";
 function ChatPage() {
