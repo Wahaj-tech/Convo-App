@@ -3,9 +3,17 @@
 
 
 @property --border-angle {
-    inherits: false;
-    initial-value: 0deg;
-    syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+  syntax: "<angle>";
+}
+@keyframes border-rotate {
+  to {
+    --border-angle: 360deg;
+  }
+}
+.animate-border {
+  animation: border-rotate 6s linear infinite;
 }
 
 

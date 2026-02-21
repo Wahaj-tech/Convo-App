@@ -12,9 +12,10 @@ export const useChatStore= create((set,get)=>({
     isUsersLoading:false,
     isMessagesLoading:false,
     isSoundEnabled:localStorage.getItem("isSoundEnabled")==="true"?true:false,
-    toggleSound:()=>{
-        localStorage.setItem("isSoundEnabled",!get().isSoundEnabled),//initially we are setting it to false
-        set({isSoundEnabled:!get().isSoundEnabled})
+    toggleSound: () => {
+        const newValue = !get().isSoundEnabled;
+        localStorage.setItem("isSoundEnabled", newValue);
+        set({ isSoundEnabled: newValue });
     },
     setActiveTab:(tab)=>{
         set({activeTab:tab})
@@ -84,5 +85,30 @@ export const useChatStore= create((set,get)=>({
             set({messages:messages})//if error occurs we want to remove that optimistic message from the UI so we are setting the messages to previous messages
             toast.error(error.response?.data.message|| "failed to load image")
         }
-    }
+    },
+    subscribeToMessages:()=>{
+        const {selectedUser}=get();
+        if(!selectedUser)return;//if no user is selected then we don't want to subscribe to messages
+        const socket=useAuthStore.getState().socket; //getting socket from auth store because we have created socket connection in auth store
+        socket.on("newMessage",(newMessage)=>{
+            const { isSoundEnabled } = get();
+    
+            const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
+      if (!isMessageSentFromSelectedUser) return;
+
+            const currentMessages=get().messages;//getting the current messages from the store
+            
+            set({messages:[...currentMessages,newMessage]})//adding new message to the current messages
+            if(isSoundEnabled){
+                const notificationAudio=new Audio("/sounds/notification.mp3");
+                notificationAudio.currentTime=0;
+                notificationAudio.play().catch((err)=>{console.error("Error playing notification sound:",err)});
+            }
+        })
+
+    },
+    unsubscribeFromMessages: () => {
+    const socket = useAuthStore.getState().socket;
+    socket.off("newMessage");
+  },
 })) 

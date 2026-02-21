@@ -58,10 +58,11 @@ export const useAuthStore=create((set,get)=>({
             //instead of flash we are using react hot toast for showing success and error messages
             //npm i react-hot-toast
             toast.success("SIgnUp successful")
+            get().connectSocket()//after signup we will connect socket for real time communication
         }catch(error){
             console.error("error in signup:",error);
             toast.error(error.response?.data.message||"Signup failed");
-            get().connectSocket()//after signup we will connect socket for real time communication
+            
         }   
         finally{
             set({isSigningUp:false})
@@ -104,16 +105,16 @@ export const useAuthStore=create((set,get)=>({
             toast.error(error.response?.data.message||"Failed to update profile");
         }
     },
-    connectSocket:(socket)=>{
+    connectSocket:()=>{
         const {authUser}=get();
         if(!authUser || get().socket?.connected){
             return;
         }
-        const newSocket=io(BASE_URL,{
+        const socket=io(BASE_URL,{
             withCredentials:true,
         })
-        newSocket.connect()
-        set({socket:newSocket})
+        socket.connect()
+        set({socket:socket})
         //listen for online users-->
         socket.on("getOnlineUsers",(userIds)=>{
             set({onlineUsers:userIds})
