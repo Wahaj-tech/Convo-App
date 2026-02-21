@@ -17,9 +17,9 @@ import cors from 'cors'
 import authRoutes from './routes/auth.route.js'
 import messageRoute from './routes/message.route.js'
 import { connectDB } from '../src/lib/db.js';
+import {server,app} from './lib/socket.js';
 
 dotenv.config()//to perform process.env.Variable_name 
-const app=express()
 const __dirname=path.resolve();
 //#IMPORTANT#  payload to large error
 app.use(express.json({limit:'5mb'}))//so that we'll get access to the feilds that user send from frontend.{req.body}.....it express.json() will not allow to send more than 500KB so that we will increase the limit\
@@ -42,7 +42,7 @@ if(process.env.NODE_ENV=="production"){
     })
 }
 const PORT = process.env.PORT || 3000;
-app.listen(PORT,()=>{
+server.listen(PORT,()=>{
     console.log(`server is running on port ${process.env.PORT}`);
     connectDB()
 })  

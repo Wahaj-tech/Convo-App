@@ -4,6 +4,8 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
+import { io } from "socket.io-client";
+const BASE_URL=import.meta.env.MODE==="development" ? "http://localhost:3000" : "/";
 
 //goto zustand webpage for overview of code ..how to write
 // export const useAuthStore=create((set)=>({
@@ -24,17 +26,20 @@ import toast from "react-hot-toast";
 //we are centralizing the values and using where ever we want directly
 
 
-export const useAuthStore=create((set)=>({
+export const useAuthStore=create((set,get)=>({
     authUser:null,
     isCheckingAuth:true,
     isSigningUp:false,
     isLoggingIn:false,
     isLoggedOut:false,
+    socket:null,
+    onlineUsers:[],
     checkAuth:async()=>{
         try{
             const res=await axiosInstance.get('/auth/check');//this is equal to http://localhost:3000/api/auth/check
             if (res.data && res.data._id) { // or whatever field identifies a valid user
                 set({ authUser: res.data });
+                get().connectSocket()
             } else {
                 set({ authUser: null });
             }
@@ -56,6 +61,7 @@ export const useAuthStore=create((set)=>({
         }catch(error){
             console.error("error in signup:",error);
             toast.error(error.response?.data.message||"Signup failed");
+            get().connectSocket()//after signup we will connect socket for real time communication
         }   
         finally{
             set({isSigningUp:false})
@@ -67,6 +73,7 @@ export const useAuthStore=create((set)=>({
             const res=await axiosInstance.post('/auth/login',data);
             set({authUser:res.data})
             toast.success("Login successful")
+            get().connectSocket()//after login we will connect socket for real time communication
         }catch(error){
             console.error("error in login:",error);
             toast.error(error.response?.data.message||"Login failed");
@@ -80,6 +87,7 @@ export const useAuthStore=create((set)=>({
             const res=await axiosInstance.post('/auth/logout');//backend seh {"message":"Logged Out Successfully"} yeh aa rha h(can go and check in network in browser devtools and clicking on Fetch/XHR)
             set({authUser:null})
             toast.success(res.data.message)
+            get().disconnectSocket()//after logout we will disconnect socket for real time communication
         }
         catch(error){
             toast.error(error.response?.data.message||"Logout failed");
@@ -96,9 +104,26 @@ export const useAuthStore=create((set)=>({
             toast.error(error.response?.data.message||"Failed to update profile");
         }
     },
+    connectSocket:(socket)=>{
+        const {authUser}=get();
+        if(!authUser || get().socket?.connected){
+            return;
+        }
+        const newSocket=io(BASE_URL,{
+            withCredentials:true,
+        })
+        newSocket.connect()
+        set({socket:newSocket})
+        //listen for online users-->
+        socket.on("getOnlineUsers",(userIds)=>{
+            set({onlineUsers:userIds})
+        })
+    },
+    disconnectSocket:()=>{
+        if(get().socket?.connected) get().socket.disconnect();
+    }
+}))
 
-    }))
 
-
-
+ 
  
