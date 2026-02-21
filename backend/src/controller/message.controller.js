@@ -60,13 +60,13 @@ export const sendMessage=async(req,res)=>{
             senderId,
             receiverId,
             text,
-            imageURL,
+            image:imageURL,
         });
         await newMessage.save();//save it to DB
         
         //todo: send message in real-time if user is online.(not just to save it on message db)
 
-        res.status(200).json({newMessage})
+        res.status(200).json(newMessage)
     }catch(err){
         console.error("Error in sendMessage:",err);
         res.status(500).json({message:"Internal Server Error"})

@@ -1,6 +1,8 @@
 import {create} from 'zustand';
 import { axiosInstance } from '../lib/axios';
 import {toast} from 'react-hot-toast';
+import {useAuthStore} from './useAuthStore.js' 
+
 export const useChatStore= create((set,get)=>({
     allContacts:[],
     chats:[],
@@ -61,12 +63,25 @@ export const useChatStore= create((set,get)=>({
     },
     sendMessage:async(data)=>{
         const {selectedUser,messages}=get();//getting the selected user and messages
-        set({isMessagesLoading:true})
+        //we are seeing some time delay after sending message so for that-->
+        const{authUser}=useAuthStore.getState();
+        const tempId=`temp-${Date.now()}`
+        const optimisticMessage={
+            _id:tempId,
+            senderId:authUser,
+            receiverId:selectedUser._id,
+            image:data.image,
+            createdAt:new Date().toISOString(),
+            isOptimistic:true,//flag to identify optimistic message (its optional)
+        }
+        //immidiately update the UI by adding message
+        set({messages:[...messages,optimisticMessage]})
         try{
             const res=await axiosInstance.post(`/messages/send/${selectedUser._id}`,data);
             set({messages:messages.concat(res.data)})//we don't want to overwrite the message so latest messages will be added 
         }
         catch(error){
+            set({messages:messages})//if error occurs we want to remove that optimistic message from the UI so we are setting the messages to previous messages
             toast.error(error.response?.data.message|| "failed to load image")
         }
     }
