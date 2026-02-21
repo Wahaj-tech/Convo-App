@@ -22,6 +22,11 @@ const io=new Server(server,{
 //apply authentication middleware for all socket connection
 io.use(socektAuthMiddleware);
 
+//we will use this function in chat controller to get the socket id of the receiver when we want to send a message to that particular user
+export function getReceiverSocketId(userId){
+    return userSocketMap[userId];
+}
+
 //for storing online users-->
 const userSocketMap={};//{userId:socketId}
 
