@@ -5,7 +5,7 @@
 
 // const express=require('express'); for performing import from type syntax put "type":"module" & under script "dev":"nodemon src/app.js" as app is under src folder similarly under script "start":"node src/app.js" as when we deploy it we don't want any changes
 
-//MONGO_URI=mongodb+srv://khanwahaj016_db_user:CYE9ptYpTcKOOAFX@cluster0.byhs2ac.mongodb.net/convoAppDB?appName=Cluster0 to name your data base putur name after .net/{ur DB name}? save any backend file
+//MONGO_URI=mongodb.net/convoAppDB?appName=Cluster0 to name your data base putur name after .net/{ur DB name}? save any backend file
 
 import express from 'express';
 import dotenv from 'dotenv'//without this we'll get undefined for env varables
